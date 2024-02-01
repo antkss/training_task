@@ -13,4 +13,18 @@
 
 khi đó ta có thể ghi đè return của hàm main để điều hướng chương trình 
 
+- ban đầu khi chọn option 1 và nhập em thấy rằng có 1 địa chỉ chắn ngang ở đây, địa chỉ này chính là địa chỉ nhập rsi của hàm read ở option 1
+
+  ![image](https://github.com/antkss/training_task/assets/88892713/1df8136e-1306-476b-8bb3-0680f7086c7f)
+  chính vì vậy khi nhập full bytes sẽ tạo thành 1 chuỗi để chuyển sang option 2, có thể in ra từng byte một ở đây, và từ đó in cả địa chỉ
+
+![image](https://github.com/antkss/training_task/assets/88892713/578525c8-2a21-4766-b37d-c2c5f165ce99)
+
+sau mỗi lần write ra 1 byte thì nó sẽ tăng giá trị tại rbp-0x8 lên 1 bytes và nó quay trở về để thêm cộng giá trị đó với địa chỉ nhập rsp và lưu tại rdi, cứ như vậy địa chỉ tại rdi sẽ tăng dần cho đến khi giá trị tại địa chỉ trên rdi = NULL và từ đó in hết tất cả những gì trên stack bao gồm cả địa chỉ, sau khi lấy được địa chỉ thì em để đó để dùng cho lần sau 
+
+![image](https://github.com/antkss/training_task/assets/88892713/f5fb830a-dd6f-44dd-9ad4-4823fac42eb2)
+
+
+
+- tiếp theo em cần xem 
 
