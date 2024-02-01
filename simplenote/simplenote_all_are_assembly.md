@@ -50,3 +50,12 @@ và chunk 2 là địa chỉ chuỗi /bin/sh và opcode 0x3b, chunk 1, 4 sẽ đ
 - kết quả khi syscall
 
 ![image](https://github.com/antkss/training_task/assets/88892713/757fb2be-eb98-43bc-a790-298c2038fa8e)
+
+![image](https://github.com/antkss/training_task/assets/88892713/01ceaaa7-5241-4802-8662-1559a14ce27a)
+
+
+
+-kết quả khi cs=rác, chương trình sẽ không hoạt động 
+
+![image](https://github.com/antkss/training_task/assets/88892713/14c36e8b-d8b3-428b-ac8d-3ac51a865857)
+
