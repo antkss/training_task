@@ -7,7 +7,7 @@
 
 ![image](https://github.com/antkss/training_task/assets/88892713/73b59320-f6b6-45b5-b763-d6254294e764)
 
-- mỗi lần vào option 1 nó sẽ subtract 0x40 tính từ lúc rsp trỏ đầu stack, vì vậy nó cứ lùi dần về sau, nhưng quan trọng hơn ở option 4 mỗi lần thực thi nó lại cộng thêm 0x40 bytes tính từ rsp vì vậy ta có thể ghi dữ liệu qua lại trên stack theo từng block có kích thước 0x40 bytes
+- mỗi lần vào option 1 nó sẽ subtract 0x40 tính từ lúc rsp trỏ đầu stack, vì vậy nó cứ lùi dần về sau, nhưng quan trọng hơn ở option 4 mỗi lần thực thi nó lại cộng thêm 0x40 bytes tính từ rsp vì vậy ta có thể ghi dữ liệu qua lại trên stack theo từng chunk có kích thước 0x40 bytes
 
   ![image](https://github.com/antkss/training_task/assets/88892713/92c93884-93b7-47b2-b061-02517a01784c)
 
@@ -31,6 +31,22 @@ em sẽ lùi về 6 lần 0x40 theo hướng địa chỉ tăng và ghi /bin/sh 
 
 ![image](https://github.com/antkss/training_task/assets/88892713/ab163d63-a092-46cd-8a8c-036640e545ed)
 
-sau khi hoàn thành em cần ghi dữ liệu theo thứ tự của sigreturn 
+- sau khi hoàn thành em cần ghi dữ liệu theo thứ tự của sigreturn trong bảng, chuck cuối sẽ đc nhập đầu tiên
+
+![image](https://github.com/antkss/training_task/assets/88892713/2b52d510-94a2-4419-9a8b-839bf7ee78a0)
+
+dựa vào bảng này thì em có thể xác định được dữ liệu cuối cùng em phải nhập sẽ là cs register có giá trị là 0x33 và fs là 0 vì đó là điều kiện khi chạy ở 64bit mode, nếu không thì code sẽ không chạy sau khi sigreturn , vì vậy em cần phải dùng offset ở cột bên trái để tính được địa chỉ của nó nằm ở chunk nào, tính từ syscall sigreturn, qua tính toán thì em thấy nó ở chunk thứ 3 nên em phải nhập dữ liệu cho thanh ghi bắt đầu từ đó,
+
+em sẽ nhập chunk 6 là chuỗi /bin/sh rồi lấy địa chỉ 
+
+tiếp theo đến chunk 3 sẽ là dữ liệu của rsp, rip và cs 
+
+![image](https://github.com/antkss/training_task/assets/88892713/c9f122dc-7e09-4563-ba23-60439a62c534)
+
+và chunk 2 là địa chỉ chuỗi /bin/sh và opcode 0x3b, chunk 1, 4 sẽ để trống vì không có thanh ghi nào cần dùng cả
 
 
+
+- kết quả khi syscall
+
+![image](https://github.com/antkss/training_task/assets/88892713/757fb2be-eb98-43bc-a790-298c2038fa8e)
