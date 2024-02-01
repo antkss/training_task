@@ -62,4 +62,5 @@ và chunk 2 là địa chỉ chuỗi /bin/sh và opcode 0x3b, chunk 1, 4 sẽ đ
 # ngoài ra 
 - ngoài ra ta có thể dùng pwntools để tạo frame cho sigreturn mà không cần làm thủ công như trên =))) vì mỗi chunk chỉ có 0x40 nên em phải cắt frame ra từng mảnh
 
-![Uploading image.png…]()
+![image](https://github.com/antkss/training_task/assets/88892713/361012ec-2b39-4e76-b610-85eed15450b1)
+
