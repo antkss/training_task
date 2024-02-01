@@ -26,5 +26,11 @@ sau mỗi lần write ra 1 byte thì nó sẽ tăng giá trị tại rbp-0x8 lê
 
 
 
-- tiếp theo em cần xem 
+- sau khi có địa chỉ em cần ghi chuổi /bin/sh ở đâu đó trên stack và tính địa chỉ của nó
+em sẽ lùi về 6 lần 0x40 theo hướng địa chỉ tăng và ghi /bin/sh ở đó
+
+![image](https://github.com/antkss/training_task/assets/88892713/ab163d63-a092-46cd-8a8c-036640e545ed)
+
+sau khi hoàn thành em cần ghi dữ liệu theo thứ tự của sigreturn 
+
 
