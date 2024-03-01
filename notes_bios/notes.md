@@ -62,7 +62,7 @@ gadget sẽ là gadget có sẵn của rdi, gắn gadget vào để nó chạy �
 
 ![image](https://github.com/antkss/training_task/assets/88892713/c4248108-d7c4-42c0-9048-bdd77506956d)
 
-vậy là xong xuôi, shellcode sẽ được thực thi
+vậy là xong xuôi, shellcode sẽ được thực thi khi chữ Sent! xuất hiện 
 
 
 ![image](https://github.com/antkss/training_task/assets/88892713/95c8bfc6-718a-44fa-86f0-e154db436d59)
