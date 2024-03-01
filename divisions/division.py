@@ -1,20 +1,20 @@
 #!/bin/python
 from pwn import *
-exe = ELF('./division')
+exe = ELF('./divisionorigin')
 libc = ELF("./libc.musl-x86_64.so.1")
 # ld = ELF("./ld-2.23.so")
 p = process(exe.path)
-context.terminal = ['foot']
-gdb.attach(p, gdbscript='''
-#            b*main+73
-#            c
-           # set $rax=0 
-b*input+109
- set *(long int*)0x555555557fa0 = 0x00005555555552f5
- set follow-fork-mode child
-           
-
-           ''')
+# context.terminal = ['foot']
+# gdb.attach(p, gdbscript='''
+# #            b*main+73
+# #            c
+#            # set $rax=0 
+# b*input+109
+#  set *(long int*)0x555555557fa0 = 0x00005555555552f5
+#  set follow-fork-mode child
+#            
+#
+           # ''')
 #################exploiting#####################
 # while True:
 num1 = p.recvuntil(b' / ', drop=True)
