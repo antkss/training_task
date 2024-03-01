@@ -39,6 +39,39 @@ trong vòng 2 giây em cần phải viết script để thực hiện đổi kí
 đầu tiên em cần leak địa chỉ vì nhận ra rằng cần địa chỉ stack của thread start_routine để có thể lấy địa chỉ chuỗi /bin/sh dùng cho sau này 
 
 
+![image](https://github.com/antkss/training_task/assets/88892713/765210d0-b099-451c-a06e-acb41434fb1b)
+
+
+ở đây ta thấy vùng địa chỉ khi nhập notes và vùng địa chỉ của ld-linux gần nhau nên có thể phóng đại kích thước để leak địa chỉ từ ld-linux 
+
+![image](https://github.com/antkss/training_task/assets/88892713/c6b4b3a1-44cf-4946-be51-2427a2369f4b)
+
+tại đây em phát hiện địa chỉ của thread nên em leak luôn
+
+
+![image](https://github.com/antkss/training_task/assets/88892713/4480a95d-4dc2-4fe4-a8c7-52baa0703477)
+
+đầu tiên em nhập đúng kích thước, sau đó đợi khoảng 2 giây để vượt qua check, sau đó em đổi kích thước sang 5706 để leak địa chỉ, sau khi đổi kích thước và chọn option 3 là print_note thì em leak đc địa chỉ cần leak, lọc đống rác trên màn hình và lấy địa chỉ rồi tính chỗ mình cần nhập chuỗi /bin/sh
+
+sau khi lấy được địa chỉ nhân lúc hàm chưa kết thúc thì em sẽ đổi content của note thành gadget để overwrite saved rip của process, cùng với đó là ghi chuỗi /bin/sh vào chỗ mình cần ghi 
+
+
+![image](https://github.com/antkss/training_task/assets/88892713/a7bcb351-a8d3-4ae3-91f6-8ad78ac9d80b)
+
+gadget sẽ là gadget có sẵn của rdi, gắn gadget vào để nó chạy được syscall sigreturn và setup frame cho sigreturn rồi gửi đi 
+
+![image](https://github.com/antkss/training_task/assets/88892713/c4248108-d7c4-42c0-9048-bdd77506956d)
+
+vậy là xong xuôi, shellcode sẽ được thực thi
+
+
+![image](https://github.com/antkss/training_task/assets/88892713/95c8bfc6-718a-44fa-86f0-e154db436d59)
+
+
+
+# lưu ý
+
+- bài chỉ run khi alsr được bật full tính năng 
 
 
 
