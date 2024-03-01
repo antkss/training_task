@@ -1,4 +1,7 @@
-![image](https://github.com/antkss/training_task/assets/88892713/bec0bda0-4f31-4154-ace9-16a50abca5a4)# write up divisions
+# write up divisions
+
+
+![image](https://github.com/antkss/training_task/assets/88892713/bec0bda0-4f31-4154-ace9-16a50abca5a4)
 - đầu tiên khi decompile ra ta thấy bài có ptrace nhằm mục đích antidebug, khi chạy bình thường thì hàm vẫn chạy như bình thường, chính vì vậy muốn debug thì phải sửa assembly code cùa chương trình để loại bỏ ptrace, chỉ cần dùng tính năng có sẵn của ida là có thể sửa được thành nop
 
 ![image](https://github.com/antkss/training_task/assets/88892713/1c1f96f4-2317-4421-80d9-8690280a5af5)
