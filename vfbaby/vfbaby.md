@@ -57,4 +57,20 @@ exit (int status)
    0x7c0c1f03a009    ror    rax, 0x11
 
   ```
-
+- khi đi sâu vào hàm mà đc call từ rdx, ta sẽ thấy có 1 vị trí call khác là  ``` call   qword ptr [rip + 0x216414]    <0x7c0c1f400c90>```
+```assembly
+  0x7c0c1f410ae0    lea    rax, [rax + rax*8]
+   0x7c0c1f410ae4    lea    rcx, [rip + 0x215555]         <_rtld_global>
+   0x7c0c1f410aeb    shl    rax, 4
+   0x7c0c1f410aef    lea    r12, [rcx + rax - 0x88]
+   0x7c0c1f410af7    jmp    0x7c0c1f410b27                <0x7c0c1f410b27>
+    ↓
+ ► 0x7c0c1f410b27    lea    rdi, [rip + 0x215e1a]         <_rtld_global+2312>
+   0x7c0c1f410b2e    call   qword ptr [rip + 0x216414]    <0x7c0c1f400c90>
+ 
+   0x7c0c1f410b34    mov    ecx, dword ptr [r12]
+   0x7c0c1f410b38    test   ecx, ecx
+   0x7c0c1f410b3a    je     0x7c0c1f410b00                <0x7c0c1f410b00>
+ 
+   0x7c0c1f410b3c    mov    rax, qword ptr [r12 - 8]
+```
