@@ -1,4 +1,4 @@
-![image](https://github.com/antkss/training_task/assets/88892713/e2666030-8083-4a99-a197-acc3210d6550)# write up vfbaby 
+# write up vfbaby 
 - khi mở chương trình lên, chương trình cho phép em có thể có được địa chỉ của libc
 ```shell
 as@vfbaby🍎 ls
