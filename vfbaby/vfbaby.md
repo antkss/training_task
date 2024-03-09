@@ -9,6 +9,21 @@
 ![image](https://github.com/antkss/training_task/assets/88892713/96320f1a-f511-4b11-a4cf-065d8a21afbc)
 
 khi debug và đi sâu xuống hàm exit(), em bắt gặp nó call cái địa chỉ này, đây chính là nó đang call hàm __run_exit_handlers
+```assembly
+ ► 0x5d00caa00780 <exit@plt>     jmp    qword ptr [rip + 0x20085a]    <exit>
+    ↓
+   0x7c0c1f03a030 <exit>         lea    rsi, [rip + 0x38a5c1]
+   0x7c0c1f03a037 <exit+7>       sub    rsp, 8
+   0x7c0c1f03a03b <exit+11>      mov    edx, 1
+   0x7c0c1f03a040 <exit+16>      call   0x7c0c1f039f10                <0x7c0c1f039f10>
+ 
+   0x7c0c1f03a045                nop    word ptr cs:[rax + rax]
+   0x7c0c1f03a04f                nop    
+   0x7c0c1f03a050 <on_exit>      push   rbp
+   0x7c0c1f03a051 <on_exit+1>    push   rbx
+   0x7c0c1f03a052 <on_exit+2>    mov    rbx, rdi
+   0x7c0c1f03a055 <on_exit+5>    lea    rdi, [rip + 0x38a59c]
+   ```
 ![image](https://github.com/antkss/training_task/assets/88892713/25b25f3d-e1f1-4219-b9c1-dbb9fdb5bf52)
 
 
@@ -19,3 +34,4 @@ exit (int status)
   __run_exit_handlers (status, &__exit_funcs, true, true);
 }
 ```
+
