@@ -12,10 +12,10 @@ khi debug và đi sâu xuống hàm exit(), em bắt gặp nó call cái địa 
 ![image](https://github.com/antkss/training_task/assets/88892713/25b25f3d-e1f1-4219-b9c1-dbb9fdb5bf52)
 
 
-`
+```C
 void
 exit (int status)
 {
   __run_exit_handlers (status, &__exit_funcs, true, true);
 }
-`
+```
