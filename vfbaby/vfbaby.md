@@ -1,8 +1,11 @@
 # write up vfbaby 
 - khi mở chương trình lên, chương trình cho phép em có thể có được địa chỉ của libc
-
-![image](https://github.com/antkss/training_task/assets/88892713/eff50485-56f2-4c56-b24d-039e03afdf76)
-
+```shell
+as@vfbaby🍎 ls
+flag  howtoror17.txt  ld-2.23.so  libc-2.23.so  libc.so.6  ptr_guard.py  solve.py  vfbaby  vfbaby.i64  vfbaby.md  vfbaby.py  vfbaby_patched  vfbaby_patched-origin  vfbaby_patched-origin.i64  vfbaby_patched.i64
+as@vfbaby🍎 ./vfbaby         
+here is a gift 0x767a58e553a0, good luck ;)
+```
 -  Bài tập trung vào lỗi của exit vì bài có arbitrary read, nhìn vào hàm dường như không thấy gì ngoài việc ta có thể ghi dữ liệu vào 1 địa chỉ nào đó thông qua read vì thế em có thể dùng read để ghi 1 cái gì đó vào vùng ghi được của libc
 
 ```assembly
@@ -35,4 +38,23 @@ exit (int status)
 }
 ```
 
-- tiếp tục đi sâu vào hàm đó thì em 
+- tiếp tục đi sâu vào hàm đó thì em thấy nó call 1 hàm khác là rdx, và khi nó mov giá trị từ địa chỉ $rax-0x18 thì nó xor với 1 giá trị khác ở vùng fs:0x30 để có được 1 địa chỉ libc có thể thực thi, cả 2 vùng đều có thể ghi được nhưng có 1 vấn đề là các giá trị này random nên em không thể ghi vào đó để khai thác,  hiện tại em chỉ sở hữu libc nên em phải tìm 1 chỗ khác tương tự
+
+ 
+```assembly
+  0x7c0c1f039fde    add    rax, r13
+   0x7c0c1f039fe1    mov    rdx, qword ptr [rax + 0x18]
+   0x7c0c1f039fe5    mov    rdi, qword ptr [rax + 0x20]
+   0x7c0c1f039fe9    ror    rdx, 0x11
+   0x7c0c1f039fed    xor    rdx, qword ptr fs:[0x30]
+ ► 0x7c0c1f039ff6    call   rdx                           <0x7c0c1f410ab0>
+ 
+   0x7c0c1f039ff8    jmp    0x7c0c1f039f30                <0x7c0c1f039f30>
+ 
+   0x7c0c1f039ffd    nop    dword ptr [rax]
+   0x7c0c1f03a000    shl    rax, 5
+   0x7c0c1f03a004    mov    rax, qword ptr [r13 + rax + 0x18]
+   0x7c0c1f03a009    ror    rax, 0x11
+
+  ```
+
