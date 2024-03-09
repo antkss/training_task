@@ -5,9 +5,10 @@
 
 -  Bài tập trung vào lỗi của exit vì bài có arbitrary read, nhìn vào hàm dường như không thấy gì ngoài việc ta có thể ghi dữ liệu vào 1 địa chỉ nào đó thông qua read vì thế em có thể dùng read để ghi 1 cái gì đó vào vùng ghi được của libc
 
-
-![image](https://github.com/antkss/training_task/assets/88892713/96320f1a-f511-4b11-a4cf-065d8a21afbc)
-
+```assembly
+  0x7c0c1f3c0000     0x7c0c1f3c4000 r--p     4000 1c0000 /home/as/pwnable/vfbaby/libc-2.23.so
+    0x7c0c1f3c4000     0x7c0c1f3c6000 rw-p     2000 1c4000 /home/as/pwnable/vfbaby/libc-2.23.so
+    ```
 khi debug và đi sâu xuống hàm exit(), em bắt gặp nó call cái địa chỉ này, đây chính là nó đang call hàm __run_exit_handlers
 ```assembly
  ► 0x5d00caa00780 <exit@plt>     jmp    qword ptr [rip + 0x20085a]    <exit>
@@ -24,7 +25,6 @@ khi debug và đi sâu xuống hàm exit(), em bắt gặp nó call cái địa 
    0x7c0c1f03a052 <on_exit+2>    mov    rbx, rdi
    0x7c0c1f03a055 <on_exit+5>    lea    rdi, [rip + 0x38a59c]
    ```
-![image](https://github.com/antkss/training_task/assets/88892713/25b25f3d-e1f1-4219-b9c1-dbb9fdb5bf52)
 
 
 ```C
@@ -35,3 +35,4 @@ exit (int status)
 }
 ```
 
+- tiếp tục đi sâu vào hàm đó thì em 
